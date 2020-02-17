@@ -112,7 +112,10 @@ namespace BlackJack
         // if player hits 21 on the draw, program skips playerTurn  
         if (playerTotal == 21 )
         {
-          playerTurn = false;
+        Console.WriteLine($"\n\nPlayer received {playerList}for a total of {playerTotal}.");
+        Console.WriteLine("\n\nPlayer wins!");
+        playerTurn = false;
+        dealerTurn = false;
         }
 
         // player turn
@@ -172,7 +175,7 @@ namespace BlackJack
               {
               dealerList = CardList(dealerHand);
               dealerTotal = Total(dealerHand);
-              Console.WriteLine("\n\n~~Dealer wins!");
+              Console.WriteLine("\n\nDealer wins!");
               dealerTurn = false;
               }
             }
