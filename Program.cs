@@ -162,17 +162,17 @@ namespace BlackJack
             Console.Clear();
             Console.WriteLine($"\n\nPlayer received {playerList}for a total of {playerTotal}.");
             Console.WriteLine($"\n\nDealer received {dealerList}for a total of {dealerTotal}.");
-            if (dealerTotal < 17 || dealerTotal < playerTotal || dealerTotal == playerTotal) 
+            if (dealerTotal < 17 || dealerTotal < playerTotal) 
             {
             dealerHand.Add(deck[0]);
             deck.RemoveAt(0);
             dealerList = CardList(dealerHand);
             dealerTotal = Total(dealerHand);
-              if (dealerTotal == 21)
+              if ( dealerTotal < 17 && dealerTotal == 21)
               {
               dealerList = CardList(dealerHand);
               dealerTotal = Total(dealerHand);
-              Console.WriteLine("\n\nDealer wins!");
+              Console.WriteLine("\n\n~~Dealer wins!");
               dealerTurn = false;
               }
             }
@@ -195,6 +195,14 @@ namespace BlackJack
             dealerList = CardList(dealerHand);
             dealerTotal = Total(dealerHand);
             Console.WriteLine("\n\nPlayer wins!");
+            dealerTurn = false;
+            }
+            // Condition for a "push"
+            else if (playerTotal == dealerTotal)
+            {
+            dealerList = CardList(dealerHand);
+            dealerTotal = Total(dealerHand);
+            Console.WriteLine("\n\nPlayer and Dealer push! Game is a draw!");
             dealerTurn = false;
             }
         }
