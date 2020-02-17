@@ -23,40 +23,48 @@ namespace BlackJack
     var list = "";
     for (int i = 0; i < cards.Count; i++)
     {
-      list += cards[i].DisplayCard();
+      list += cards[i].DisplayCard() + ", ";
     }
     return list;
   }
 
   // deck shuffler 
     static void Main(string[] args)
-    {
-    // list for card suits
-    var suit = new List<string>() {"Clubs", "Diamonds", "Hearts","Spades"};
-    // list for card ranks
-    var rank = new List<string>() {"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"};
-    // empty list to put cards after suits and ranks are combined
-    var deck = new List<Card>() {};
+    {   
+      // creating the while loop to play the game
+      bool playerTurn = true;
+      bool dealerTurn = true;
+      bool playing = true;
 
-    // method for combining ranks and suits
-    for (var i = 0; i < suit.Count; i++)
-    {
-      for (var n = 0; n < rank.Count; n++)
-        {
-          var card = new Card();
-          card.Rank = rank[n];
-          card.Suit = suit[i];
-          if (card.Suit == "Diamonds" || card.Suit == "Hearts")
+      // start game
+      while (playing == true)
+      {
+      // list for card suits
+      var suit = new List<string>() {"Clubs", "Diamonds", "Hearts","Spades"};
+      // list for card ranks
+      var rank = new List<string>() {"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"};
+      // empty list to put cards after suits and ranks are combined
+      var deck = new List<Card>() {};
+
+      // method for combining ranks and suits
+      for (var i = 0; i < suit.Count; i++)
+      {
+        for (var n = 0; n < rank.Count; n++)
           {
-            card.Color = "Red";
+            var card = new Card();
+            card.Rank = rank[n];
+            card.Suit = suit[i];
+            if (card.Suit == "Diamonds" || card.Suit == "Hearts")
+            {
+              card.Color = "Red";
+            }
+            else
+            {
+              card.Color = "Black";
+            }
+          deck.Add(card);
           }
-          else
-          {
-            card.Color = "Black";
-          }
-        deck.Add(card);
         }
-      }
 
       // method to shuffle the deck
       for (int i = deck.Count - 1; i >= 0; i--)
@@ -69,16 +77,6 @@ namespace BlackJack
 
       }
       
-
-     
-      // creating the while loop to play the game
-      bool playerTurn = true;
-      bool dealerTurn = true;
-      bool playing = true;
-
-      // start game
-      while (playing == true)
-      {
       // house deals to the dealer, keeps cards in hand hidden from dealer
       var dealerHand = new List<Card>() {}; 
       dealerHand.Add(deck[0]);
@@ -96,20 +94,26 @@ namespace BlackJack
       deck.RemoveAt(0);
       var playerList = CardList(playerHand);
       var playerTotal = Total(playerHand);
-  
+
       if (playerTotal == 21)
         {
+          Console.WriteLine($"\n\nPlayer received {playerList}for a total of {playerTotal}.");
           Console.WriteLine("\nYou win!");
           playerTurn = false;
           dealerTurn = false;
         }
-        
+      else if (playerTotal > 21)
+        {
+        Console.WriteLine($"\n\nPlayer received {playerList}for a total of {playerTotal}.");
+        Console.WriteLine("\n\nYou bust!");
+        }
+
         // player turn
         while (playerTurn == true)
         {
         //  clears console to remove clutter/noise when playing game
           Console.Clear();
-          Console.WriteLine($"\n\nPlayer received {playerList} for a total of {playerTotal}.");
+          Console.WriteLine($"\n\nPlayer received {playerList}for a total of {playerTotal}.");
           Console.WriteLine("\n\nWould you like to (HIT) or (STAY)");
           var playerInput = Console.ReadLine().ToLower();
           if (playerInput == "hit" && playerTotal <= 20)
@@ -119,11 +123,10 @@ namespace BlackJack
             deck.RemoveAt(0);
             playerList = CardList(playerHand);
             playerTotal = Total(playerHand);
-            Console.WriteLine($"\n\n{playerList}{playerTotal}");
             if (playerTotal == 21)
             {
-              Console.WriteLine($"\n\nPlayer received {playerList} for a total of {playerTotal}.");
-              Console.WriteLine("\nYou win!");
+              Console.WriteLine($"\n\nPlayer received {playerList}for a total of {playerTotal}.");
+              Console.WriteLine("\nPlayer wins!");
               playerTurn = false;
               dealerTurn = false;
             }
@@ -143,8 +146,8 @@ namespace BlackJack
         while (dealerTurn == true)
         {
             Console.Clear();
-            Console.WriteLine($"\nPlayer: {playerList} total = {playerTotal}");
-            Console.WriteLine($"\nDealer: {dealerList} total = {dealerTotal}");
+            Console.WriteLine($"\n\nPlayer received {playerList}for a total of {playerTotal}.");
+            Console.WriteLine($"\n\nDealer received {dealerList}for a total of {dealerTotal}.");
             if (dealerTotal < 17 || dealerTotal <= playerTotal) 
             {
             dealerHand.Add(deck[0]);
@@ -156,7 +159,7 @@ namespace BlackJack
             {
             dealerList = CardList(dealerHand);
             dealerTotal = Total(dealerHand);
-            Console.WriteLine("\n\nDealer busts! You win!");
+            Console.WriteLine("\n\nDealer busts! Player wins!");
             dealerTurn = false;
             }
             else if (dealerTotal > playerTotal || dealerTotal == 21)
@@ -176,6 +179,7 @@ namespace BlackJack
         }
       if (playerTotal > 21)
         {
+        Console.WriteLine($"\n\nPlayer received {playerList}for a total of {playerTotal}.");
         Console.WriteLine("\n\nYou bust!");
         }
       Console.WriteLine("\n\nWould you like to play again? Yes or No?");
@@ -185,8 +189,9 @@ namespace BlackJack
           Console.WriteLine("\n\nThat's not an answer! Would you like to play again? Yes or No?");
           repeat = Console.ReadLine().ToLower();
       }
-      else if (repeat == "yes")
+      if (repeat == "yes")
       {
+        Console.Clear();
         playerHand.Clear();
         dealerHand.Clear();
         playerTurn = true;
