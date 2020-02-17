@@ -82,25 +82,38 @@ namespace BlackJack
 
       // house deals to the dealer, keeps cards in hand hidden from dealer
       var dealerHand = new List<Card>() {};
-      // 
+      // deals first card to dealer
       dealerHand.Add(deck[0]);
-      // 
+      // variable to show the dealer's first card
       var firstCard = CardList(dealerHand);
+      // deals second card to dealer
       dealerHand.Add(deck[1]);
-
+      // removes cards from deck
       deck.RemoveAt(0);
       deck.RemoveAt(0);
+      // calls the CardList method to display cards in dealer's hand
       var dealerList = CardList(dealerHand);
+      // calls Total method to add up the dealer's total
       var dealerTotal = Total(dealerHand);
 
       // house deals to player and displays what's in players hand and total value 
       var playerHand = new List<Card>() {}; 
+      // deals cards to player
       playerHand.Add(deck[0]);
       playerHand.Add(deck[1]);
+      // removes cards from dexck
       deck.RemoveAt(0);
       deck.RemoveAt(0);
+      // calls the CardList method to display cards in player's hand
       var playerList = CardList(playerHand);
+      // calls Total method to add up the player's total
       var playerTotal = Total(playerHand);
+
+        // if player hits 21 on the draw, program skips playerTurn  
+        if (playerTotal == 21 )
+        {
+          playerTurn = false;
+        }
 
         // player turn
         while (playerTurn == true)
@@ -111,7 +124,7 @@ namespace BlackJack
           Console.WriteLine($"\n\nDealer is holding {firstCard}.");
           Console.WriteLine("\n\nWould you like to (HIT) or (STAY)");
           var playerInput = Console.ReadLine().ToLower();
-          if (playerTotal == 21 || playerInput == "stay")
+          if (playerInput == "stay")
           {
             playerTurn = false;
           }
@@ -155,6 +168,13 @@ namespace BlackJack
             deck.RemoveAt(0);
             dealerList = CardList(dealerHand);
             dealerTotal = Total(dealerHand);
+              if (dealerTotal == 21)
+              {
+              dealerList = CardList(dealerHand);
+              dealerTotal = Total(dealerHand);
+              Console.WriteLine("\n\nDealer wins!");
+              dealerTurn = false;
+              }
             }
             else if (dealerTotal > 21)
             {
