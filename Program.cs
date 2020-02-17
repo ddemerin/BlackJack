@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BlackJack
 {
@@ -77,10 +78,16 @@ namespace BlackJack
 
       }
       
+      // hands are dealt to dealer and player
+
       // house deals to the dealer, keeps cards in hand hidden from dealer
-      var dealerHand = new List<Card>() {}; 
+      var dealerHand = new List<Card>() {};
+      // 
       dealerHand.Add(deck[0]);
+      // 
+      var firstCard = CardList(dealerHand);
       dealerHand.Add(deck[1]);
+
       deck.RemoveAt(0);
       deck.RemoveAt(0);
       var dealerList = CardList(dealerHand);
@@ -95,50 +102,44 @@ namespace BlackJack
       var playerList = CardList(playerHand);
       var playerTotal = Total(playerHand);
 
-      if (playerTotal == 21)
-        {
-          Console.WriteLine($"\n\nPlayer received {playerList}for a total of {playerTotal}.");
-          Console.WriteLine("\nYou win!");
-          playerTurn = false;
-          dealerTurn = false;
-        }
-      else if (playerTotal > 21)
-        {
-        Console.WriteLine($"\n\nPlayer received {playerList}for a total of {playerTotal}.");
-        Console.WriteLine("\n\nYou bust!");
-        }
-
         // player turn
         while (playerTurn == true)
         {
         //  clears console to remove clutter/noise when playing game
           Console.Clear();
           Console.WriteLine($"\n\nPlayer received {playerList}for a total of {playerTotal}.");
+          Console.WriteLine($"\n\nDealer is holding {firstCard}.");
           Console.WriteLine("\n\nWould you like to (HIT) or (STAY)");
           var playerInput = Console.ReadLine().ToLower();
-          if (playerInput == "hit" && playerTotal <= 20)
-            {
+          if (playerTotal == 21 || playerInput == "stay")
+          {
+            playerTurn = false;
+          }
+          else if (playerInput == "hit" && playerTotal <= 20)
+          {
             Console.Clear();
             playerHand.Add(deck[0]);
             deck.RemoveAt(0);
             playerList = CardList(playerHand);
             playerTotal = Total(playerHand);
-            if (playerTotal == 21)
+            if (playerTotal > 21)
             {
-              Console.WriteLine($"\n\nPlayer received {playerList}for a total of {playerTotal}.");
-              Console.WriteLine("\nPlayer wins!");
-              playerTurn = false;
-              dealerTurn = false;
+            Console.WriteLine($"\n\nPlayer received {playerList}for a total of {playerTotal}.");
+            Console.WriteLine("\nPlayer busts! Player loses!");
+            playerTurn = false;
+            dealerTurn = false;
             }
-            else if (playerTotal > 21)
+            if (playerTotal == 21 || playerInput == "stay")
             {
-              playerTurn = false;
-              dealerTurn = false;
+            playerTurn = false;
             }
           }
-          else if (playerInput == "stay")
+          else if (playerTotal > 21)
           {
+            Console.WriteLine($"\n\nPlayer received {playerList}for a total of {playerTotal}.");
+            Console.WriteLine("\nPlayer busts! Player loses!");
             playerTurn = false;
+            dealerTurn = false;
           }
         }
 
@@ -148,7 +149,7 @@ namespace BlackJack
             Console.Clear();
             Console.WriteLine($"\n\nPlayer received {playerList}for a total of {playerTotal}.");
             Console.WriteLine($"\n\nDealer received {dealerList}for a total of {dealerTotal}.");
-            if (dealerTotal < 17 || dealerTotal <= playerTotal) 
+            if (dealerTotal < 17 || dealerTotal < playerTotal || dealerTotal == playerTotal) 
             {
             dealerHand.Add(deck[0]);
             deck.RemoveAt(0);
@@ -176,11 +177,6 @@ namespace BlackJack
             Console.WriteLine("\n\nPlayer wins!");
             dealerTurn = false;
             }
-        }
-      if (playerTotal > 21)
-        {
-        Console.WriteLine($"\n\nPlayer received {playerList}for a total of {playerTotal}.");
-        Console.WriteLine("\n\nYou bust!");
         }
       Console.WriteLine("\n\nWould you like to play again? Yes or No?");
       var repeat = Console.ReadLine().ToLower();
